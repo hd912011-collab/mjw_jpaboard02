@@ -22,7 +22,7 @@
                 <span class="input-group-text">Upload Image</span>
                 <div class="col" th:if="${board.filenames !=null && board.filenames.size()>0}">
                     <div class="container-fluid d-flex uploadResult" style="flex-wrap: wrap">
-                        <img class="m-3" th:each="filename:${board.filenames}" th:src="|/upload/view/s ${filename}|">
+                        <img class="m-3" th:each="filename:${board.filenames}" th:src="|/upload/view/s_${filename}|">
                     </div>
                 </div>
             </div>
