@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,5 +24,6 @@ public class BoardDTO {
     private int readcount;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
+    private List<String> filenames;
 
 }

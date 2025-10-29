@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,13 +62,32 @@ public class ReplyServiceImpl implements ReplyService {
     public PageResponseDTO<ReplyDTO> getListOfBoard(Long bno, PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable("rno");
         Page<Reply> result=replyRepository.findByBoardId(bno,pageable);
-        List<ReplyDTO> dtoList=result.getContent().stream()
-                .map(reply ->  entityToDto(reply))
-                .collect(Collectors.toList());
+
+        List<Reply> replyList=result.getContent();
+        List<ReplyDTO> dtoList=new ArrayList<ReplyDTO>();
+        for(Reply reply:replyList){
+            log.info(reply.getMember().getUsername());
+            ReplyDTO dto=entityToDto(reply);
+            dto.setAuthor(reply.getMember().getUsername());
+            dtoList.add(dto);
+        }
+
         return PageResponseDTO.<ReplyDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .total((int)result.getTotalElements())
                 .dtoList(dtoList)
                 .build();
+
+
+//        List<ReplyDTO> dtoList=result.getContent().stream()
+//                .map(reply ->  entityToDto(reply))
+//                .collect(Collectors.toList());
+//
+//        return PageResponseDTO.<ReplyDTO>withAll()
+//                .pageRequestDTO(pageRequestDTO)
+//                .total((int)result.getTotalElements())
+//                .dtoList(dtoList)
+//                .build();
     }
 }
+

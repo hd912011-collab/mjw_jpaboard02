@@ -25,7 +25,7 @@ public interface ReplyService {
         ReplyDTO replyDTO = ReplyDTO.builder()
                 .rno(reply.getRno())
                 .content(reply.getContent())
-                .author(reply.getMember().getUsername())
+                //.author(reply.getMember().getUsername())
                 .regDate(reply.getRegDate())
                 .updateDate(reply.getUpdateDate())
                 .bno(reply.getBoard().getBno())

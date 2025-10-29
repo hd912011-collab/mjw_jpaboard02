@@ -21,7 +21,8 @@ public class ReplyController {
     @Autowired
     private ReplyService replyService;
 
-    @PostMapping(value = "/", consumes=MediaType.APPLICATION_JSON_VALUE, produces=MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Long> register(@RequestBody ReplyDTO replyDTO){
         log.debug(replyDTO.toString());
         Map<String,Long> map = new HashMap<>();
@@ -29,9 +30,35 @@ public class ReplyController {
         map.put("rno",rno);
         return map;
     }
+
     @GetMapping("/list/{bno}")
-    public PageResponseDTO<ReplyDTO> getReplies(@PathVariable("bno") Long bno, PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<ReplyDTO> getReplies(@PathVariable("bno") Long bno,
+                                                PageRequestDTO pageRequestDTO){
         PageResponseDTO<ReplyDTO> responseDTO=replyService.getListOfBoard(bno,pageRequestDTO);
         return responseDTO;
     }
+
+    @GetMapping("/{rno}")
+    public ReplyDTO read(@PathVariable("rno") Long rno){
+        log.info("read"+rno);
+        ReplyDTO replyDTO=replyService.findById(rno);
+        return replyDTO;
+    }
+
+    @DeleteMapping("/{rno}")
+    public Map<String,Long> remove(@PathVariable("rno")Long rno){
+        Map<String,Long> map=new HashMap<>();
+        replyService.deleteReply(rno);
+        map.put("rno",rno);
+        return map;
+    }
+    @PutMapping(value = "/{rno}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String,Long> Modify(@PathVariable("rno") Long rno, @RequestBody ReplyDTO replyDTO){
+        replyDTO.setRno(rno);
+        replyService.modifyReply(replyDTO);
+        Map<String,Long> map=new HashMap<>();
+        map.put("rno",rno);
+        return map;
+    }
 }
+

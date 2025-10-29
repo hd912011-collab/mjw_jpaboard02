@@ -7,9 +7,10 @@ import org.mjw.jpaboard02.dto.PageRequestDTO;
 import org.mjw.jpaboard02.dto.PageResponseDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
-    public interface BoardService {
+public interface BoardService {
         Long insertBoard(BoardDTO boardDTO);
         List<BoardDTO> findAllBoards();
         BoardDTO findBoardById(Long bno, Integer mode);
@@ -25,6 +26,12 @@ import java.util.List;
                     .title(boardDTO.getTitle())
                     .content(boardDTO.getContent())
                     .build();
+            if(boardDTO.getFilenames()!=null){
+                boardDTO.getFilenames().forEach(filename -> {
+                    String[] arr=filename.split("_");
+                    board.addImage(arr[0], arr[1]);
+                });
+            }
             return board;
         }
         default BoardDTO entityToDTO(Board board)
@@ -37,6 +44,11 @@ import java.util.List;
                     .regDate(board.getRegDate())
                     .updateDate(board.getUpdateDate())
                     .build();
+            List<String> filenames=board.getImageSet().stream()
+                    .sorted()
+                    .map(img->img.getUuid()+"_"+img.getFilename())
+                    .collect(Collectors.toList());
+            boardDTO.setFilenames(filenames);
             return boardDTO;
         }
     }

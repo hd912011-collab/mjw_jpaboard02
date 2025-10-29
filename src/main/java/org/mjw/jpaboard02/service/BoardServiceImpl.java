@@ -51,7 +51,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDTO findBoardById(Long bno, Integer mode) {
-        Board board = boardRepository.findById(bno).orElse(null); //Optional<Board>
+        //Board board = boardRepository.findById(bno).orElse(null); //Optional<Board>
+        Board board = boardRepository.findByIdWithImages(bno).orElse(null);
         if(mode==1){
             board.updateReadcount(); //Optional<Board>
             boardRepository.save(board);

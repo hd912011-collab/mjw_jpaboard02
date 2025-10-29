@@ -10,6 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<Reply,Long>{
-    @Query("select r from Reply r where r.board.bno=:boardId")
+    @Query("select r from Reply r where r.board.bno=:bno")
     Page<Reply> findByBoardId(Long bno, Pageable pageable);
 }
