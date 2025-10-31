@@ -17,7 +17,7 @@
                             <option value="w" th:selected="${pageRequestDTO.type=='w'}">작성자</option>
                             <option value="tc" th:selected="${pageRequestDTO.type=='tc'}">제목+내용</option>
                             <option value="tcw" th:selected="${pageRequestDTO.type=='tcw'}">제목+내용+작성자</option>
-                          </select>
+                        </select>
                     </div>
                     <input type="text" name="keyword" class="input-control" th:value="${pageRequestDTO.keyword}">
                     <button class="btn btn-secondary searchBtn" type="submit">검색</button>

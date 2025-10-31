@@ -1,10 +1,8 @@
 package org.mjw.jpaboard02.service;
 
 import org.mjw.jpaboard02.domain.Board;
-import org.mjw.jpaboard02.dto.BoardDTO;
-import org.mjw.jpaboard02.dto.BoardListReplyCountDTO;
-import org.mjw.jpaboard02.dto.PageRequestDTO;
-import org.mjw.jpaboard02.dto.PageResponseDTO;
+import org.mjw.jpaboard02.domain.BoardImage;
+import org.mjw.jpaboard02.dto.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +24,11 @@ public interface BoardService {
                     .title(boardDTO.getTitle())
                     .content(boardDTO.getContent())
                     .build();
-            if(boardDTO.getFilenames()!=null){
-                boardDTO.getFilenames().forEach(filename -> {
-                    String[] arr=filename.split("_");
-                    board.addImage(arr[0], arr[1]);
+
+            if(boardDTO.getBoardImageDTOS()!=null){
+                boardDTO.getBoardImageDTOS().forEach(file -> {
+                    //String[] arr=filename.split("_");
+                    board.addImage(file.getUuid(), file.getFilename(), file.isImage());
                 });
             }
             return board;
@@ -44,11 +43,20 @@ public interface BoardService {
                     .regDate(board.getRegDate())
                     .updateDate(board.getUpdateDate())
                     .build();
-            List<String> filenames=board.getImageSet().stream()
+            List<BoardImageDTO> imgBoardDTO=board.getImageSet().stream()
                     .sorted()
-                    .map(img->img.getUuid()+"_"+img.getFilename())
+                    .map(img->imgEntityToDTO(img))
                     .collect(Collectors.toList());
-            boardDTO.setFilenames(filenames);
+            boardDTO.setBoardImageDTOS(imgBoardDTO);
             return boardDTO;
+        }
+        default BoardImageDTO imgEntityToDTO(BoardImage boardImage){
+            BoardImageDTO dto=BoardImageDTO.builder()
+                    .uuid(boardImage.getUuid())
+                    .filename(boardImage.getFilename())
+                    .image(boardImage.isImage())
+                    .ord(boardImage.getOrd())
+                    .build();
+            return dto;
         }
     }

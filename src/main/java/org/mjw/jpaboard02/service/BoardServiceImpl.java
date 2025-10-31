@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.mjw.jpaboard02.domain.Board;
 import org.mjw.jpaboard02.domain.Member;
-import org.mjw.jpaboard02.dto.BoardDTO;
-import org.mjw.jpaboard02.dto.BoardListReplyCountDTO;
-import org.mjw.jpaboard02.dto.PageRequestDTO;
-import org.mjw.jpaboard02.dto.PageResponseDTO;
+import org.mjw.jpaboard02.dto.*;
 import org.mjw.jpaboard02.repository.BoardRepository;
 import org.mjw.jpaboard02.repository.MemberRepository;
+import org.mjw.jpaboard02.repository.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +27,8 @@ public class BoardServiceImpl implements BoardService {
     private BoardRepository boardRepository;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ReplyRepository replyRepository;
 
     @Override
     public Long insertBoard(BoardDTO boardDTO){
@@ -66,11 +66,20 @@ public class BoardServiceImpl implements BoardService {
     public void updateBoard(BoardDTO boardDTO) {
         Board board = boardRepository.findById(boardDTO.getBno()).orElse(null);
         board.change(boardDTO.getTitle(), boardDTO.getContent());
+        if(boardDTO.getBoardImageDTOS()!=null){
+            board.removeImage();
+            for(BoardImageDTO imgDTO : boardDTO.getBoardImageDTOS()){
+                board.addImage(imgDTO.getUuid(), imgDTO.getFilename(), imgDTO.isImage());
+            }
+        }
         boardRepository.save(board);
     }
 
     @Override
     public void deleteBoard(Long bno) {
+        Board board = boardRepository.findByIdWithImages(bno).orElse(null);
+        board.removeImage();
+        //replyRepository.deleteByBoardId(bno);
         boardRepository.deleteById(bno);
     }
 
